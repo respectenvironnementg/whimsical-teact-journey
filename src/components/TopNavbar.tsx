@@ -47,6 +47,14 @@ const TopNavbar = () => {
                 <MapPin size={18} />
                 TROUVER UNE BOUTIQUE
               </button>
+              
+              <button
+                onClick={() => setIsContactModalOpen(true)}
+                className="flex items-center gap-2 text-sm text-white whitespace-nowrap hover:text-accent transition-colors duration-300"
+              >
+                <Phone size={18} />
+                CONTACTEZ-NOUS
+              </button>
             </div>
 
             <div className="flex items-center gap-4 sm:hidden">
@@ -55,13 +63,6 @@ const TopNavbar = () => {
           </div>
 
           <div className="hidden sm:flex items-center gap-4">
-            <button
-              onClick={() => setIsContactModalOpen(true)}
-              className="flex items-center gap-2 text-sm text-white whitespace-nowrap hover:text-accent transition-colors duration-300"
-            >
-              <Phone size={18} />
-              CONTACTEZ-NOUS
-            </button>
             <CartIcon />
           </div>
         </div>
@@ -74,6 +75,7 @@ const TopNavbar = () => {
         expandedItem={expandedItem}
         onToggleSubmenu={toggleSubmenu}
         onStoreClick={() => setIsStoreModalOpen(true)}
+        onContactClick={() => setIsContactModalOpen(true)}
       />
 
       <MobileMenuOverlay isOpen={isOpen} onClose={toggleMenu} />

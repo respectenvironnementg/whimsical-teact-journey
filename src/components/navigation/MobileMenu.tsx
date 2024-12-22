@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, MapPin } from 'lucide-react';
+import { X, MapPin, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MobileMenuItem from './MobileMenuItem';
 
@@ -10,6 +10,7 @@ interface MobileMenuProps {
   expandedItem: string | null;
   onToggleSubmenu: (title: string) => void;
   onStoreClick: () => void;
+  onContactClick: () => void;
 }
 
 const MobileMenu = ({
@@ -19,6 +20,7 @@ const MobileMenu = ({
   expandedItem,
   onToggleSubmenu,
   onStoreClick,
+  onContactClick,
 }: MobileMenuProps) => {
   return (
     <AnimatePresence>
@@ -28,7 +30,7 @@ const MobileMenu = ({
           animate={{ x: 0 }}
           exit={{ x: "-100%" }}
           transition={{ type: "spring", damping: 25, stiffness: 200 }}
-          className="fixed top-0 left-0 h-full bg-gradient-to-br from-[#700100]/90 via-[#8B0000]/85 to-[#700100]/90 backdrop-blur-lg shadow-2xl w-[85vw] max-w-[400px] z-50"
+          className="fixed top-0 left-0 h-full bg-gradient-to-br from-[#700100]/85 via-[#8B0000]/80 to-[#700100]/85 backdrop-blur-md shadow-2xl w-[85vw] max-w-[400px] z-50"
         >
           <div className="flex items-center justify-between p-6 border-b border-white/10">
             <h2 className="text-2xl font-semibold text-white tracking-wider">Menu</h2>
@@ -52,13 +54,21 @@ const MobileMenu = ({
                 />
               ))}
               
-              <li className="mt-6 border-t border-white/10 pt-6">
+              <li className="mt-6 border-t border-white/10 pt-6 space-y-4">
                 <button
                   onClick={onStoreClick}
-                  className="w-full flex items-center gap-3 text-white hover:text-accent transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/5"
+                  className="w-full flex items-center gap-3 text-white hover:text-accent transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10 group"
                 >
-                  <MapPin size={20} />
-                  <span className="text-lg">Trouver une boutique</span>
+                  <MapPin size={20} className="group-hover:scale-110 transition-transform duration-300" />
+                  <span className="text-lg group-hover:translate-x-1 transition-transform duration-300">Trouver une boutique</span>
+                </button>
+
+                <button
+                  onClick={onContactClick}
+                  className="w-full flex items-center gap-3 text-white hover:text-accent transition-colors duration-300 py-3 px-4 rounded-lg hover:bg-white/10 group"
+                >
+                  <Phone size={20} className="group-hover:scale-110 transition-transform duration-300" />
+                  <span className="text-lg group-hover:translate-x-1 transition-transform duration-300">Contactez-nous</span>
                 </button>
               </li>
             </ul>
