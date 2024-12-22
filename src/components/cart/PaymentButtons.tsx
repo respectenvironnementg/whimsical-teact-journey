@@ -39,6 +39,9 @@ const PaymentButtons = ({
     setIsLoading(true);
 
     try {
+      // Add a 6-second delay
+      await new Promise(resolve => setTimeout(resolve, 6000));
+
       const orderId = `ORDER-${Date.now()}`;
       const response = await initKonnectPayment({
         amount: finalTotal,
