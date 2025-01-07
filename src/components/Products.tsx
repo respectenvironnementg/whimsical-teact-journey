@@ -19,11 +19,8 @@ const Products = () => {
     loop: true,
     align: 'start',
     slidesToScroll: 1,
-    breakpoints: {
-      '(min-width: 768px)': { slidesToScroll: 1 },
-      '(min-width: 1024px)': { slidesToScroll: 1 }
-    },
-    dragFree: true
+    containScroll: 'trimSnaps',
+    dragFree: false
   });
 
   const { data: products, isLoading, error } = useQuery({
@@ -61,42 +58,44 @@ const Products = () => {
           Nouveau produits
         </h1>
         <Categories />
-        <div className="relative w-full" ref={emblaRef}>
-          <Carousel className="w-full">
-            <CarouselContent className="-ml-4">
-              {isLoading ? (
-                Array.from({ length: 6 }).map((_, index) => (
-                  <CarouselItem 
-                    key={index} 
-                    className="pl-4 basis-full md:basis-1/2 lg:basis-1/4"
-                  >
-                    <div className="h-[400px] bg-gray-100 rounded-lg animate-pulse" />
-                  </CarouselItem>
-                ))
-              ) : (
-                products?.map((product) => (
-                  <CarouselItem 
-                    key={product.id} 
-                    className="pl-4 basis-full md:basis-1/2 lg:basis-1/4"
-                  >
-                    <ProductCard product={product} />
-                  </CarouselItem>
-                ))
-              )}
-            </CarouselContent>
-            <CarouselPrevious
-              aria-label="Previous product"
-              className="absolute -left-2 md:-left-6 top-1/2 transform -translate-y-1/2 bg-[#700100] hover:bg-black/90 border-none h-8 w-8 md:h-10 md:w-10 rounded-full z-10"
-            >
-              <i className="bi bi-chevron-left text-white"></i>
-            </CarouselPrevious>
-            <CarouselNext
-              aria-label="Next product"
-              className="absolute -right-2 md:-right-6 top-1/2 transform -translate-y-1/2 bg-[#700100] hover:bg-black/90 border-none h-8 w-8 md:h-10 md:w-10 rounded-full z-10"
-            >
-              <i className="bi bi-chevron-right text-white"></i>
-            </CarouselNext>
-          </Carousel>
+        <div className="relative w-full">
+          <div className="overflow-hidden" ref={emblaRef}>
+            <Carousel className="w-full">
+              <CarouselContent className="-ml-4">
+                {isLoading ? (
+                  Array.from({ length: 6 }).map((_, index) => (
+                    <CarouselItem 
+                      key={index} 
+                      className="pl-4 basis-full md:basis-1/2 lg:basis-1/4"
+                    >
+                      <div className="h-[400px] bg-gray-100 rounded-lg animate-pulse" />
+                    </CarouselItem>
+                  ))
+                ) : (
+                  products?.map((product) => (
+                    <CarouselItem 
+                      key={product.id} 
+                      className="pl-4 basis-full md:basis-1/2 lg:basis-1/4"
+                    >
+                      <ProductCard product={product} />
+                    </CarouselItem>
+                  ))
+                )}
+              </CarouselContent>
+            </Carousel>
+          </div>
+          <CarouselPrevious
+            aria-label="Previous product"
+            className="absolute -left-2 md:-left-6 top-1/2 transform -translate-y-1/2 bg-[#700100] hover:bg-black/90 border-none h-8 w-8 md:h-10 md:w-10 rounded-full z-10"
+          >
+            <i className="bi bi-chevron-left text-white"></i>
+          </CarouselPrevious>
+          <CarouselNext
+            aria-label="Next product"
+            className="absolute -right-2 md:-right-6 top-1/2 transform -translate-y-1/2 bg-[#700100] hover:bg-black/90 border-none h-8 w-8 md:h-10 md:w-10 rounded-full z-10"
+          >
+            <i className="bi bi-chevron-right text-white"></i>
+          </CarouselNext>
         </div>
       </div>
     </div>
