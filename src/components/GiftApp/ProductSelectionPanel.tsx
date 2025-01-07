@@ -127,8 +127,8 @@ const ProductSelectionPanel = ({
       <div className="flex-1 overflow-y-auto min-h-0">
         <ProductGrid 
           products={paginatedProducts}
-          onDragStart={(e, product) => e.dataTransfer.setData('product', JSON.stringify(product))}
-          onProductSelect={handleProductSelect}
+          onProductClick={handleProductSelect}
+          onProductDrop={onItemDrop}
         />
       </div>
 
