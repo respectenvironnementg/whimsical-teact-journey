@@ -33,7 +33,7 @@ const OrderSummary = ({
   const { calculateTotal, hasNewsletterDiscount } = useCart();
   const { subtotal, discount: newsletterDiscount, total } = calculateTotal();
   
-  const shipping = subtotal > 299 ? 0 : 7;
+  const shipping = subtotal > 299 ? 0 : 8;
   const finalTotal = total + shipping;
 
   // Check if any item has personalization
