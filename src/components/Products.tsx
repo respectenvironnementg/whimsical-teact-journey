@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -15,7 +15,7 @@ import { Skeleton } from './ui/skeleton';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const Products = () => {
-  const [emblaRef] = useEmblaCarousel({
+  const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: 'start',
     skipSnaps: false,
@@ -27,6 +27,24 @@ const Products = () => {
     queryKey: ['products'],
     queryFn: fetchAllProducts,
   });
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) {
+      emblaApi.scrollNext();
+    }
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const interval = setInterval(() => {
+      scrollNext();
+    }, 4000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [emblaApi, scrollNext]);
 
   if (error) {
     console.error('Erreur de chargement des produits:', error);
