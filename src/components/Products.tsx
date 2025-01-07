@@ -18,9 +18,12 @@ const Products = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: 'start',
-    skipSnaps: false,
-    dragFree: false,
-    containScroll: 'trimSnaps'
+    slidesToScroll: 1,
+    breakpoints: {
+      '(min-width: 768px)': { slidesToScroll: 1 },
+      '(min-width: 1024px)': { slidesToScroll: 1 }
+    },
+    dragFree: true
   });
 
   const { data: products, isLoading, error } = useQuery({
