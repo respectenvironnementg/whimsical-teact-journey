@@ -21,7 +21,7 @@ const Men = () => {
 
   return (
     <section className="py-8 px-4 flex flex-col items-center justify-center bg-gray-50">
-      <h1 className="text-[2.7rem] md:text-[3.3rem] text-[#700100] font-['WomanFontBold'] mb-8">
+      <h1 className="text-[2.7rem] md:text-[3.3rem] text-[#700100] font-['WomanFontRegular'] mb-8">
         Mens Essential
       </h1>
      
@@ -42,7 +42,7 @@ const Men = () => {
             />
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
                         text-center py-[2.2rem] px-[6.5rem] rounded-lg">
-              <span className="text-white text-[4rem] whitespace-nowrap font-['WomanFontBold']">
+              <span className="text-white text-[4rem] whitespace-nowrap font-['WomanFontRegular']">
                 {image.text}
               </span>
             </div>

@@ -19,7 +19,7 @@ const ProductCardSection = ({ product }: ProductCardProps) => {
       </div>
       <div className="p-2 md:p-4">
         <div className="flex justify-between items-center">
-          <div className="text-base font-['WomanFontBold'] text-[#591C1C]">
+          <div className="text-base font-['WomanFontRegular'] text-[#591C1C]">
             {product.name}
           </div>
           <div className="text-base font-bold text-black">

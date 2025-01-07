@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
 
 const Categories = () => {
-  const categories = ['SUITS', 'BLAZERS', 'POLO AND T-SHIRTS', 'SHIRTS'];
+  const categories = ['Costume', 'Veste', 'Chemise', 'Accessoire'];
 
   const containerStyle: CSSProperties = {
     display: 'flex',

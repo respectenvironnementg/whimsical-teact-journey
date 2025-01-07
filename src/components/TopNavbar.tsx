@@ -6,6 +6,7 @@ import MobileMenuOverlay from "./navigation/MobileMenuOverlay";
 import { menuItems } from "@/constants/menuItems";
 import StoreLocationsModal from "./StoreLocationsModal";
 import ContactModal from "./ContactModal";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const TopNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,13 +24,13 @@ const TopNavbar = () => {
   };
 
   return (
-    <div className="font-['Montserrat'] font-light">
-      <nav className="bg-primary px-6 py-4 shadow-md">
+    <div className="font-['WomanFontRegular']">
+      <nav className="bg-primary px-2 sm:px-3 py-3 sm:py-[4px] shadow-md">
         <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0">
-          <div className="flex items-center justify-between w-full sm:w-auto">
+          <div className="flex items-center justify-between w-full sm:w-auto sm:h-[90%]">
             <button
               onClick={toggleMenu}
-              className="lg:hidden text-white hover:text-accent transition-colors duration-300"
+              className="lg:hidden text-white hover:text-accent transition-colors duration-300 -ml-1"
               aria-label="Toggle menu"
             >
               {isOpen ? (
@@ -44,25 +45,24 @@ const TopNavbar = () => {
                 onClick={() => setIsStoreModalOpen(true)}
                 className="flex items-center gap-2 text-sm text-white whitespace-nowrap hover:text-accent transition-colors duration-300"
               >
-                <MapPin size={18} />
+                <MapPin size={16} />
                 TROUVER UNE BOUTIQUE
-              </button>
-              
-              <button
-                onClick={() => setIsContactModalOpen(true)}
-                className="flex items-center gap-2 text-sm text-white whitespace-nowrap hover:text-accent transition-colors duration-300"
-              >
-                <Phone size={18} />
-                CONTACTEZ-NOUS
               </button>
             </div>
 
-            <div className="flex items-center gap-4 sm:hidden">
+            <div className="flex items-center gap-4 sm:hidden -mr-1">
               <CartIcon />
             </div>
           </div>
 
-          <div className="hidden sm:flex items-center gap-4">
+          <div className="hidden sm:flex items-center gap-4 sm:h-[90%]">
+            <button
+              onClick={() => setIsContactModalOpen(true)}
+              className="flex items-center gap-2 text-sm text-white whitespace-nowrap hover:text-accent transition-colors duration-300"
+            >
+              <Phone size={16} />
+              CONTACTEZ-NOUS
+            </button>
             <CartIcon />
           </div>
         </div>

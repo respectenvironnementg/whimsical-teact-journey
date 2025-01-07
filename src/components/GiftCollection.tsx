@@ -10,10 +10,10 @@ const GiftCollection = () => {
   ];
 
   return (
-    <section className="bg-[#F9FAFB] py-10 font-['WomanFontBold']">
+    <section className="bg-[#F9FAFB] py-10 font-['WomanFontRegular']">
       <div className="container mx-auto p-5 flex flex-wrap justify-between">
-        <div className="w-full text-right mb-5">
-          <h2 className="text-[#8A2B3B] text-4xl">En savoir plus !</h2>
+        <div className="w-full text-center mb-5">
+          <h2 className="text-[#8A2B3B] text-4xl">Le monde fiori</h2>
         </div>
         {items.map((item, index) => (
           <a
@@ -26,7 +26,7 @@ const GiftCollection = () => {
               alt={item.label}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
             />
-            <div className="absolute bottom-0 w-full text-center  text-white bg-[#591C1C]/80  py-3 text-lg transition-opacity duration-300 group-hover:bg-opacity-70">
+            <div className="absolute bottom-0 w-full text-center text-white bg-[#591C1C]/80 py-3 text-lg transition-opacity duration-300 group-hover:bg-opacity-70">
               {item.label}
             </div>
           </a>

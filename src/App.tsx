@@ -12,11 +12,14 @@ import { Skeleton } from "./components/ui/skeleton";
 // Lazy load pages
 const Index = React.lazy(() => import("./pages/Index"));
 const CategoryPage = React.lazy(() => import("./pages/CategoryPage"));
+const GiftUniversePage = React.lazy(() => import("./pages/GiftUniversePage"));
 const CartPage = React.lazy(() => import('./pages/CartPage'));
 const PaymentSuccessPage = React.lazy(() => import('./pages/PaymentSuccessPage'));
 const PaymentFailurePage = React.lazy(() => import('./pages/PaymentFailurePage'));
 const PromoCodesPage = React.lazy(() => import('./pages/PromoCodesPage'));
 const OrderPreviewPage = React.lazy(() => import('./pages/OrderPreviewPage'));
+const ProductDetailPage = React.lazy(() => import('./pages/ProductDetailPage'));
+const FooterCategoryPage = React.lazy(() => import('./pages/FooterCategoryPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -72,6 +75,22 @@ const App = () => (
                   } 
                 />
                 <Route 
+                  path="/univers-cadeaux/*" 
+                  element={
+                    <Suspense fallback={<PageLoader />}>
+                      <GiftUniversePage />
+                    </Suspense>
+                  } 
+                />
+                <Route 
+                  path="/product/:id" 
+                  element={
+                    <Suspense fallback={<PageLoader />}>
+                      <ProductDetailPage />
+                    </Suspense>
+                  } 
+                />
+                <Route 
                   path="/cart" 
                   element={
                     <Suspense fallback={<PageLoader />}>
@@ -108,6 +127,14 @@ const App = () => (
                   element={
                     <Suspense fallback={<PageLoader />}>
                       <PaymentFailurePage />
+                    </Suspense>
+                  } 
+                />
+                <Route 
+                  path="/footer-category/*" 
+                  element={
+                    <Suspense fallback={<PageLoader />}>
+                      <FooterCategoryPage />
                     </Suspense>
                   } 
                 />

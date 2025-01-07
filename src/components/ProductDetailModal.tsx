@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Minus, Plus, ShoppingCart, X } from 'lucide-react';
-import { useCart } from '../components/cart/CartProvider';
+import { Heart } from 'lucide-react';
+import { useCart } from './cart/CartProvider';
 import { useToast } from "@/hooks/use-toast";
 import { playTickSound } from '../utils/audio';
+import { motion } from 'framer-motion';
+import ColorSelector from './product-detail/ColorSelector';
+import SizeSelector from './product-detail/SizeSelector';
+import QuantitySelector from './product-detail/QuantitySelector';
+import PersonalizationButton from './product-detail/PersonalizationButton';
+import { getPersonalizations } from '@/utils/personalizationStorage';
+import ProductDetailHeader from './product-detail/ProductDetailHeader';
+import ProductDetailContent from './product-detail/ProductDetailContent';
+import ProductDetailActions from './product-detail/ProductDetailActions';
 
 interface ProductDetailModalProps {
   isOpen: boolean;
@@ -23,136 +31,122 @@ interface ProductDetailModalProps {
 
 const ProductDetailModal = ({ isOpen, onClose, product }: ProductDetailModalProps) => {
   const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState('');
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [personalization, setPersonalization] = useState(() => {
+    const savedPersonalizations = getPersonalizations();
+    return savedPersonalizations[product.id] || '';
+  });
+  
   const { addToCart } = useCart();
   const { toast } = useToast();
 
-  const incrementQuantity = () => setQuantity((prev) => prev + 1);
-  const decrementQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-
   const handleAddToCart = () => {
+    if (!selectedSize) {
+      toast({
+        title: "Veuillez sélectionner une taille",
+        description: "Une taille doit être sélectionnée avant d'ajouter au panier",
+        variant: "destructive",
+      });
+      return;
+    }
+
     addToCart({
       id: product.id,
       name: product.name,
       price: product.price,
       image: product.image,
-      quantity: quantity
+      quantity: quantity,
+      size: selectedSize,
+      color: product.color,
+      personalization: personalization
     });
 
     playTickSound();
-
     toast({
       title: "Produit ajouté au panier",
-      description: `${quantity} x ${product.name} ajouté avec succès`,
+      description: `${quantity} x ${product.name} (${selectedSize}) ajouté avec succès`,
       duration: 5000,
-      className: "bg-red-50 border-red-200",
       style: {
         backgroundColor: '#700100',
         color: 'white',
         border: '1px solid #590000',
       },
     });
-
     onClose();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[95vw] max-w-2xl p-3 md:p-4 bg-white rounded-lg shadow-lg overflow-hidden mx-auto">
-        <button
-          onClick={onClose}
-          className="absolute right-2 top-2 p-1.5 md:p-2 rounded-full hover:bg-gray-100 transition-colors z-50"
-          aria-label="Fermer"
-        >
-          <X className="h-4 w-4 text-gray-500" />
-        </button>
-
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="w-full md:w-1/2">
-            <div className="bg-gray-50 p-2 md:p-4 rounded-lg">
+      <DialogContent className="w-[95vw] max-w-[1000px] p-0 bg-white rounded-lg shadow-xl overflow-hidden mx-auto">
+        <div className="flex flex-col lg:flex-row h-[90vh] lg:h-auto">
+          {/* Left Column - Image */}
+          <div className="w-full lg:w-1/2 relative bg-gray-50 p-6">
+            <button
+              onClick={() => setIsWishlisted(!isWishlisted)}
+              className="absolute right-4 top-4 p-2 rounded-full bg-white shadow-md hover:bg-gray-50 transition-colors z-10"
+            >
+              <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-[#700100] text-[#700100]' : 'text-gray-400'}`} />
+            </button>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className="h-full flex items-center justify-center"
+            >
               <img
                 src={product.image}
                 alt={product.name}
-                className="w-full h-[200px] md:h-[400px] object-contain transition-transform duration-300 hover:scale-105"
-                loading="lazy"
+                className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
               />
-            </div>
+            </motion.div>
           </div>
 
-          <div className="w-full md:w-1/2 space-y-3 p-1 md:p-2">
-            <div>
-              <h2 className="text-base md:text-xl font-bold text-gray-800">{product.name}</h2>
-              <p className="text-xs md:text-sm text-gray-500">REF: {product.id.toString().padStart(6, '0')}</p>
-            </div>
+          {/* Right Column - Product Info */}
+          <div className="w-full lg:w-1/2 flex flex-col overflow-hidden">
+            <ProductDetailHeader
+              onClose={onClose}
+              name={product.name}
+              price={product.price}
+              status={product.status}
+            />
 
-            <div className="text-lg md:text-2xl font-bold text-[#471818]">{product.price} TND</div>
+            <div className="flex-1 overflow-y-auto">
+              <ProductDetailContent
+                description={product.description}
+                material={product.material}
+                color={product.color}
+                id={product.id}
+              />
 
-            <div className="space-y-2">
-              <div>
-                <h3 className="text-xs md:text-sm font-medium text-gray-700">Description</h3>
-                <p className="text-xs md:text-sm text-gray-600">{product.description}</p>
-              </div>
+              <div className="p-6 space-y-6">
+                <SizeSelector
+                  selectedSize={selectedSize}
+                  sizes={['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL']}
+                  onSizeSelect={setSelectedSize}
+                />
 
-              <div>
-                <h3 className="text-xs md:text-sm font-medium text-gray-700">Matière</h3>
-                <p className="text-xs md:text-sm text-gray-600">{product.material}</p>
-              </div>
+                <div className="space-y-2">
+                  <span className="text-sm font-medium text-gray-900">Quantité</span>
+                  <QuantitySelector
+                    quantity={quantity}
+                    onIncrement={() => setQuantity(q => q + 1)}
+                    onDecrement={() => setQuantity(q => q > 1 ? q - 1 : 1)}
+                  />
+                </div>
 
-              <div>
-                <h3 className="text-xs md:text-sm font-medium text-gray-700">Statut</h3>
-                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                  product.status === 'En stock' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                }`}>
-                  {product.status}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <span className="text-xs md:text-sm font-medium text-gray-700">Quantité</span>
-              <div className="flex items-center space-x-2">
-                <Button 
-                  variant="outline" 
-                  size="icon" 
-                  onClick={decrementQuantity} 
-                  className="h-6 w-6 md:h-8 md:w-8"
-                >
-                  <Minus className="h-3 w-3 md:h-4 md:w-4" />
-                </Button>
-                <span className="w-6 md:w-8 text-center text-gray-700 font-medium text-sm md:text-base">{quantity}</span>
-                <Button 
-                  variant="outline" 
-                  size="icon" 
-                  onClick={incrementQuantity} 
-                  className="h-6 w-6 md:h-8 md:w-8"
-                >
-                  <Plus className="h-3 w-3 md:h-4 md:w-4" />
-                </Button>
+                <PersonalizationButton
+                  productId={product.id}
+                  onSave={setPersonalization}
+                  initialText={personalization}
+                />
               </div>
             </div>
 
-            <Button
-              className="w-full bg-[#471818] hover:bg-[#2d0f0f] text-white py-2 md:py-3 rounded-md flex items-center justify-center gap-2 transition-all text-xs md:text-sm"
-              onClick={handleAddToCart}
-              disabled={product.status !== 'En stock'}
-            >
-              <ShoppingCart className="h-4 w-4" />
-              {product.status === 'En stock' ? 'Ajouter au panier' : 'Produit épuisé'}
-            </Button>
-
-            <div className="text-xs space-y-1 pt-2">
-              <p className="flex items-center gap-1">
-                <span className="w-1 h-1 rounded-full bg-gray-500"></span>
-                Livraison gratuite en Tunisie
-              </p>
-              <p className="flex items-center gap-1">
-                <span className="w-1 h-1 rounded-full bg-gray-500"></span>
-                Retours gratuits sous 14 jours
-              </p>
-              <p className="flex items-center gap-1">
-                <span className="w-1 h-1 rounded-full bg-gray-500"></span>
-                Service client disponible 24/7
-              </p>
-            </div>
+            <ProductDetailActions
+              onAddToCart={handleAddToCart}
+              status={product.status}
+            />
           </div>
         </div>
       </DialogContent>

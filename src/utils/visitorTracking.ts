@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { toast } from "@/components/ui/use-toast";
 
 const API_URL = 'https://respizenmedical.com/fiori/track_visitor.php';
 const MAX_RETRIES = 3;
@@ -9,32 +8,36 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 interface VisitorData {
   page_visitors: string;
-  city_visitors: string;
-  country_visitors: string;
-  ip_visitors: string;
-  date_visitors: string;
+}
+
+interface ApiResponse {
+  status: string;
+  message: string;
+  data?: {
+    ip: string;
+    city: string;
+    country: string;
+    page: string;
+    date: string;
+  };
 }
 
 export const trackVisitor = async (pageName: string, retryCount = 0): Promise<void> => {
   try {
     console.log('Starting visitor tracking for page:', pageName);
-    
+
     const visitorData: VisitorData = {
-      page_visitors: pageName,
-      city_visitors: 'Unknown', // Server will handle this
-      country_visitors: 'Unknown', // Server will handle this
-      ip_visitors: 'Server-Side', // Server will detect the real IP
-      date_visitors: new Date().toISOString().split('T')[0]
+      page_visitors: pageName
     };
 
     console.log('Sending visitor data:', visitorData);
 
-    const response = await axios.post(API_URL, visitorData, {
+    const response = await axios.post<ApiResponse>(API_URL, visitorData, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      timeout: 5000 // 5 seconds timeout
+      timeout: 5000
     });
 
     console.log('Tracking response:', response.data);
@@ -49,17 +52,10 @@ export const trackVisitor = async (pageName: string, retryCount = 0): Promise<vo
 
     if (retryCount < MAX_RETRIES) {
       console.log(`Retrying... Attempt ${retryCount + 1} of ${MAX_RETRIES}`);
-      await delay(RETRY_DELAY * (retryCount + 1)); // Exponential backoff
+      await delay(RETRY_DELAY * (retryCount + 1));
       return trackVisitor(pageName, retryCount + 1);
     }
 
-    // Only show error toast in production
-    if (process.env.NODE_ENV === 'production') {
-      toast({
-        title: "Tracking Error",
-        description: "Unable to track your visit at this time.",
-        variant: "destructive",
-      });
-    }
+    console.error('Failed to track visitor after maximum retries');
   }
 };
