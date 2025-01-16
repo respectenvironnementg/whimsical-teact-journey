@@ -35,15 +35,13 @@ const MobileMenu = ({
   };
 
   const handleTouchEnd = () => {
-    if (touchStart - touchEnd > 100) { // Minimum swipe distance
+    if (touchStart - touchEnd > 100) {
       onClose();
     }
-    // Reset values
     setTouchStart(0);
     setTouchEnd(0);
   };
 
-  // Handle click on menu item
   const handleItemClick = (callback: () => void) => {
     callback();
     onClose();
@@ -170,6 +168,7 @@ const MobileMenu = ({
                   <span className="text-lg group-hover:translate-x-1 transition-transform duration-300">Contactez-nous</span>
                 </button>
               </li>
+
             </ul>
           </div>
         </motion.div>
