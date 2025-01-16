@@ -7,9 +7,10 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { CartProvider } from "./components/cart/CartProvider";
 import { usePageTracking } from "./hooks/usePageTracking";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { Skeleton } from "./components/ui/skeleton";
+import { PageLoader } from "./components/PageLoader";
+import { AnimatePresence, motion } from "framer-motion";
 
-// Lazy load pages
+// Lazy load pages with minimal delay
 const Index = React.lazy(() => import("./pages/Index"));
 const CategoryPage = React.lazy(() => import("./pages/CategoryPage"));
 const GiftUniversePage = React.lazy(() => import("./pages/GiftUniversePage"));
@@ -20,6 +21,12 @@ const PromoCodesPage = React.lazy(() => import('./pages/PromoCodesPage'));
 const OrderPreviewPage = React.lazy(() => import('./pages/OrderPreviewPage'));
 const ProductDetailPage = React.lazy(() => import('./pages/ProductDetailPage'));
 const FooterCategoryPage = React.lazy(() => import('./pages/FooterCategoryPage'));
+const MondeFioriHistoire = React.lazy(() => import('./pages/MondeFioriHistoire'));
+const MondeFioriCollection = React.lazy(() => import('./pages/MondeFioriCollection'));
+const MondeFioriDNA = React.lazy(() => import('./pages/MondeFioriDNA'));
+const SurMesurePage = React.lazy(() => import('./pages/SurMesurePage'));
+const UniversCadeauxPage = React.lazy(() => import('./pages/UniversCadeauxPage'));
+const GiftCardsPage = React.lazy(() => import('@/pages/GiftCardsPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,22 +38,23 @@ const queryClient = new QueryClient({
   },
 });
 
-// Loading fallback component
-const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center p-4">
-    <div className="w-full max-w-md space-y-4">
-      <Skeleton className="h-12 w-full" />
-      <Skeleton className="h-64 w-full" />
-      <Skeleton className="h-32 w-full" />
-    </div>
-  </div>
-);
-
 // Wrapper component to implement tracking
 const TrackingWrapper = ({ children }: { children: React.ReactNode }) => {
   usePageTracking();
   return <>{children}</>;
 };
+
+// Page wrapper with transitions
+const PageWrapper = ({ children }: { children: React.ReactNode }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -20 }}
+    transition={{ duration: 0.2 }}
+  >
+    {children}
+  </motion.div>
+);
 
 const App = () => (
   <ErrorBoundary>
@@ -57,20 +65,30 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <TrackingWrapper>
-              <Routes>
-                <Route 
-                  path="/" 
-                  element={
-                    <Suspense fallback={<PageLoader />}>
-                      <Index />
-                    </Suspense>
-                  } 
-                />
+              <AnimatePresence mode="wait">
+                <Routes>
+                  {/* Routes with optimized Suspense configuration */}
+                  <Route 
+                    path="/" 
+                    element={
+                      <Suspense fallback={<PageLoader />}>
+                        <Index />
+                      </Suspense>
+                    } 
+                  />
                 <Route 
                   path="/category/*" 
                   element={
                     <Suspense fallback={<PageLoader />}>
                       <CategoryPage />
+                    </Suspense>
+                  } 
+                />
+                <Route 
+                  path="/univers-cadeaux" 
+                  element={
+                    <Suspense fallback={<PageLoader />}>
+                      <UniversCadeauxPage />
                     </Suspense>
                   } 
                 />
@@ -138,8 +156,49 @@ const App = () => (
                     </Suspense>
                   } 
                 />
+                <Route 
+                  path="/monde-fiori/histoire" 
+                  element={
+                    <Suspense fallback={<PageLoader />}>
+                      <MondeFioriHistoire />
+                    </Suspense>
+                  } 
+                />
+                <Route 
+                  path="/monde-fiori/collection" 
+                  element={
+                    <Suspense fallback={<PageLoader />}>
+                      <MondeFioriCollection />
+                    </Suspense>
+                  } 
+                />
+                <Route 
+                  path="/monde-fiori/dna" 
+                  element={
+                    <Suspense fallback={<PageLoader />}>
+                      <MondeFioriDNA />
+                    </Suspense>
+                  } 
+                />
+                <Route 
+                  path="/sur-mesure" 
+                  element={
+                    <Suspense fallback={<PageLoader />}>
+                      <SurMesurePage />
+                    </Suspense>
+                  } 
+                />
+                  <Route 
+    path="/gift-cards" 
+    element={
+      <Suspense fallback={<PageLoader />}>
+        <GiftCardsPage />
+      </Suspense>
+    } 
+  />
                 <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
+                </Routes>
+              </AnimatePresence>
             </TrackingWrapper>
           </BrowserRouter>
         </CartProvider>
