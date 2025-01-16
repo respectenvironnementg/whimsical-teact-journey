@@ -23,7 +23,6 @@ const MobileMenu = ({
   onStoreClick,
   onContactClick,
 }: MobileMenuProps) => {
-  // Handle touch gestures
   const [touchStart, setTouchStart] = React.useState(0);
   const [touchEnd, setTouchEnd] = React.useState(0);
 
@@ -76,7 +75,7 @@ const MobileMenu = ({
 
           <div className="overflow-y-auto h-[calc(100vh-5rem)] hide-scrollbar">
             <ul className="p-4 space-y-2">
-              <li className="text-white/90">
+              <li className="text-white">
                 <div className="group">
                   <SubMenuSectionMobile
                     title="Le monde Fiori"
