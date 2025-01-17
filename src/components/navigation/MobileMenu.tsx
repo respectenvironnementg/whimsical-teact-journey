@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { X, MapPin, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SubMenuSectionMobile from './SubMenuSectionMobile';
@@ -23,25 +23,7 @@ const MobileMenu = ({
   onStoreClick,
   onContactClick,
 }: MobileMenuProps) => {
-  const [touchStart, setTouchStart] = React.useState(0);
-  const [touchEnd, setTouchEnd] = React.useState(0);
   const location = useLocation();
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart(e.touches[0].clientX);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.touches[0].clientX);
-  };
-
-  const handleTouchEnd = () => {
-    if (touchStart - touchEnd > 100) {
-      onClose();
-    }
-    setTouchStart(0);
-    setTouchEnd(0);
-  };
 
   const handleLinkClick = (href: string, callback?: () => void) => {
     console.log('MobileMenu: Link clicked:', href);
@@ -62,10 +44,7 @@ const MobileMenu = ({
           animate={{ x: 0 }}
           exit={{ x: "-100%" }}
           transition={{ type: "spring", damping: 25, stiffness: 200 }}
-          className="fixed top-0 left-0 h-full bg-primary w-[75vw] max-w-[360px] z-50 overflow-hidden"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
+          className="fixed top-0 left-0 h-full bg-[#700100] w-[75vw] max-w-[360px] z-50 overflow-hidden"
         >
           <div className="flex items-center justify-between p-6 border-b border-white/10">
             <h2 className="text-2xl font-semibold text-white tracking-wider">Menu</h2>
