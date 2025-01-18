@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { CartItem, CartContextType } from '@/types/cart';
+import { CartContextType } from '@/types/cart';
 import { saveCartItems, getCartItems } from '@/utils/cartStorage';
 import { getPersonalizations } from '@/utils/personalizationStorage';
 import { toast } from "@/hooks/use-toast";

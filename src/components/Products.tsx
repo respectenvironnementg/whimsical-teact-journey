@@ -16,22 +16,17 @@ const Products = () => {
     triggerOnce: false
   });
 
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    {
-      loop: true,
-      align: "start",
-      skipSnaps: false,
-      dragFree: false,
-      containScroll: "trimSnaps",
-    },
-    [
-      Autoplay({
-        delay: 2500,
-        stopOnInteraction: false,
-        stopOnMouseEnter: true,
-      }),
-    ]
-  );
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    align: "start",
+    skipSnaps: false,
+    dragFree: false,
+    containScroll: "trimSnaps",
+  }, [Autoplay({
+    delay: 2500,
+    stopOnInteraction: false,
+    stopOnMouseEnter: true,
+  })]);
 
   const {
     data,
@@ -46,8 +41,8 @@ const Products = () => {
     getNextPageParam: (lastPage) => 
       lastPage.currentPage < lastPage.totalPages ? lastPage.currentPage + 1 : undefined,
     initialPageParam: 1,
-    staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
-    gcTime: 10 * 60 * 1000, // Keep unused data in cache for 10 minutes
+    staleTime: 0, // Disable stale time
+    gcTime: 0, // Disable cache retention
   });
 
   useEffect(() => {
