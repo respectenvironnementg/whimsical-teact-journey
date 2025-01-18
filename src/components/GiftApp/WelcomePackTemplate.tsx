@@ -38,12 +38,12 @@ const WelcomePackTemplate = ({ packType, onCompose }: WelcomePackTemplateProps) 
             <div className={`flex flex-col ${isSingleImagePack ? 'items-center justify-center' : 'lg:grid lg:grid-cols-2'} h-full`}>
               {isSingleImagePack ? (
                 <div className="w-[85%] h-full flex items-center justify-center">
-                  <img 
-                    src={content.images[0]}
-                    alt={`${content.title} showcase`}
-                    className="w-full h-auto max-h-[510px] object-contain shadow-lg rounded-lg border-4 border-gray-200"
-                  />
-                </div>
+                <img 
+                  src={content.images[0]}
+                  alt={`${content.title} showcase`}
+                  className="w-full h-auto max-h-[510px] object-contain shadow-md rounded-md border border-gray-200"
+                />
+              </div>
               ) : (
                 <>
                   <div className="order-2 lg:order-1 space-y-1 lg:mr-[-40%] mt-6 lg:mt-0">

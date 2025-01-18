@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_URL = 'https://respizenmedical.com/fiori/track_visitor.php';
 const MAX_RETRIES = 3;
-const RETRY_DELAY = 1000; // 1 second
+const RETRY_DELAY = 40000; // 1 second
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
