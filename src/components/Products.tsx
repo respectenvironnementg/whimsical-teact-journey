@@ -11,7 +11,10 @@ const PRODUCTS_PER_PAGE = 10;
 
 const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const { ref: loadMoreRef, inView } = useInView();
+  const { ref: loadMoreRef, inView } = useInView({
+    threshold: 0.1,
+    triggerOnce: false
+  });
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
@@ -42,7 +45,9 @@ const Products = () => {
     queryFn: ({ pageParam = 1 }) => fetchPaginatedProducts(pageParam, PRODUCTS_PER_PAGE),
     getNextPageParam: (lastPage) => 
       lastPage.currentPage < lastPage.totalPages ? lastPage.currentPage + 1 : undefined,
-    initialPageParam: 1
+    initialPageParam: 1,
+    staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
+    cacheTime: 10 * 60 * 1000, // Keep unused data in cache for 10 minutes
   });
 
   useEffect(() => {
@@ -99,7 +104,6 @@ const Products = () => {
   useEffect(() => {
     const handleFilterCategory = (event: CustomEvent<{ category: string }>) => {
       setSelectedCategory(event.detail.category);
-      console.log('Filtering by category:', event.detail.category);
     };
 
     window.addEventListener('filterCategory', handleFilterCategory as EventListener);
