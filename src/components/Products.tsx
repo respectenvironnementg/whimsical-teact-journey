@@ -47,7 +47,7 @@ const Products = () => {
       lastPage.currentPage < lastPage.totalPages ? lastPage.currentPage + 1 : undefined,
     initialPageParam: 1,
     staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
-    cacheTime: 10 * 60 * 1000, // Keep unused data in cache for 10 minutes
+    gcTime: 10 * 60 * 1000, // Keep unused data in cache for 10 minutes
   });
 
   useEffect(() => {
