@@ -1,14 +1,18 @@
 import React, { useEffect, useCallback, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import { useQuery } from "@tanstack/react-query";
-import { fetchAllProducts } from "../services/productsApi";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { fetchPaginatedProducts } from "../services/paginatedProductsApi";
 import ProductCard from "./ProductCard";
 import Categories from "./Categories";
-import { preloadImages } from "../utils/preloadManager";
+import { useInView } from "react-intersection-observer";
+
+const PRODUCTS_PER_PAGE = 10;
 
 const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { ref: loadMoreRef, inView } = useInView();
+
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
       loop: true,
@@ -26,37 +30,38 @@ const Products = () => {
     ]
   );
 
-  const { data: products, isLoading, error } = useQuery({
-    queryKey: ["products"],
-    queryFn: fetchAllProducts,
-    select: (data) => {
-      return data.filter(product => product.type_product !== "outlet");
-    }
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    error
+  } = useInfiniteQuery({
+    queryKey: ['products', selectedCategory],
+    queryFn: ({ pageParam = 1 }) => fetchPaginatedProducts(pageParam, PRODUCTS_PER_PAGE),
+    getNextPageParam: (lastPage) => 
+      lastPage.currentPage < lastPage.totalPages ? lastPage.currentPage + 1 : undefined,
+    initialPageParam: 1
   });
 
-  // Preload product images when data is available
   useEffect(() => {
-    if (products) {
-      const preloadProductImages = async () => {
-        const imagesToPreload = products.map(product => product.image);
-        try {
-          await preloadImages(imagesToPreload);
-          console.log('All product images preloaded successfully');
-        } catch (error) {
-          console.error('Error preloading product images:', error);
-        }
-      };
-
-      preloadProductImages();
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
     }
-  }, [products]);
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   // Filter products based on selected category
   const filteredProducts = React.useMemo(() => {
-    if (!selectedCategory) return products;
+    if (!data?.pages) return [];
+    
+    const allProducts = data.pages.flatMap(page => page.products)
+      .filter(product => product.type_product !== "outlet");
+
+    if (!selectedCategory) return allProducts;
     
     if (selectedCategory === "vestes") {
-      return products?.filter(
+      return allProducts.filter(
         (product) => 
           product.type_product === "outlet" && 
           product.itemgroup_product === "blazers" &&
@@ -64,10 +69,10 @@ const Products = () => {
       );
     }
     
-    return products?.filter(
+    return allProducts.filter(
       (product) => product.itemgroup_product === selectedCategory
     );
-  }, [products, selectedCategory]);
+  }, [data?.pages, selectedCategory]);
 
   // Navigation handlers
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
@@ -115,19 +120,33 @@ const Products = () => {
         <Categories />
         <div className="embla relative" ref={emblaRef}>
           <div className="embla__container">
-            {isLoading
-              ? Array.from({ length: 6 }).map((_, index) => (
-                  <div className="embla__slide" key={index}>
-                    <div className="skeleton-card"></div>
-                  </div>
-                ))
-              : filteredProducts?.map((product) => (
-                  <div className="embla__slide" key={product.id}>
-                    <ProductCard product={product} />
-                  </div>
-                ))}
+            {isLoading ? (
+              Array.from({ length: 6 }).map((_, index) => (
+                <div className="embla__slide" key={index}>
+                  <div className="skeleton-card"></div>
+                </div>
+              ))
+            ) : (
+              filteredProducts.map((product) => (
+                <div className="embla__slide" key={product.id}>
+                  <ProductCard product={product} />
+                </div>
+              ))
+            )}
           </div>
+          
+          {/* Infinite scroll trigger */}
+          {!isLoading && hasNextPage && (
+            <div ref={loadMoreRef} className="h-10 w-full">
+              {isFetchingNextPage && (
+                <div className="flex justify-center py-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#700100]"></div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
+
         <button
           className={`embla__button embla__button--prev ${
             !prevEnabled && "embla__button--disabled"
@@ -147,6 +166,7 @@ const Products = () => {
           <div className="arrow-content">{'>'}</div>
         </button>
       </div>
+      
       <style>
         {`
         .products-wrapper {
@@ -249,5 +269,4 @@ const Products = () => {
   );
 };
 
-// Make sure to export the component as default
 export default Products;
